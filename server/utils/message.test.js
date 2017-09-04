@@ -18,7 +18,7 @@ describe('generateLocationMessage', () => {
     var lat = "26.6750895"
     var long = "-80.0625847"
     var url = `https://www.google.com/maps?q=26.6750895,-80.0625847`;
-    var message = generateLoc ationMessage(from, lat, long);
+    var message = generateLocationMessage(from, lat, long);
     expect(message).toInclude({from, url});
     expect(message.url).toBe(url);
   });

@@ -17,15 +17,7 @@ socket.on('newMessage', function(message) {
     from: message.from,
     createdAt: formattedTime
   });
-
   jQuery("#messages").append(html);
-
-  // console.log('New message', message);
-
-  // var li = jQuery('<li></li>');
-  // li.text(`${message.from} ${formattedTime}: ${message.text}`)
-  //
-  // jQuery('#messages').append(li);
 });
 
 socket.on('newLocationMessage', function(message) {
@@ -37,7 +29,6 @@ socket.on('newLocationMessage', function(message) {
     createdAt: formattedTime
   });
   jQuery("#messages").append(html);
-
 });
 
 jQuery('#message-form').on('submit', function (e) {

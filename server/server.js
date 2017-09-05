@@ -22,6 +22,10 @@ var server = http.createServer(app);
 var io = socketIO(server);
 var users = new Users()
 
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
 // allow the client to view and server all files in the /public directory
 app.use(express.static(publicPath));
 
@@ -59,17 +63,25 @@ io.on('connection', (socket) => {
   // whenever a 'createMessage' event is emitted from a client the following code fires
   socket.on('createMessage', (message, callback) => {
     // logs this message to the server console
-    console.log('createMessage', message);
-    // io.emit will perform the function passed into it to every single user, including the one who sent it
-    io.emit('newMessage', generateMessage(message.from, message.text));
+    // console.log('createMessage', message);
+    var user = users.getUser(socket.id);
+    if (user && isRealString(message.text)) {
+      // io.emit will perform the function passed into it to every single user, including the one who sent it
+      io.to(user.room).emit('newMessage', generateMessage(toTitleCase(user.name), message.text));
+    }
+
     // im not 100% sure what this does, something about acknowledgements or something?
     callback();
   });
 
   // whwnever a 'createLocationMessage' event is emitted from a client this code fires
   socket.on('createLocationMessage', (coords) => {
-    // again, performs this function for everyone on the server
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    var user = users.getUser(socket.id);
+    if (user) {
+      // performs this function for everyone in the room
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    }
+
   });
 
   socket.on('disconnect', () => {

@@ -92,7 +92,6 @@ jQuery('#message-form').on('submit', function (e) {
   // this is where the client actually emits a 'createMessage' event to the server
   // the event type or name or whatever is the first argument, and the data to be passed is the second argument
   socket.emit('createMessage', {
-    from: 'User',
     text: messageTextbox.val()
   }, function () {
     messageTextbox.val('');
